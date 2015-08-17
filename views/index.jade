@@ -1,0 +1,24 @@
+html
+  head
+    title!= title
+
+  script(src='http://code.jquery.com/jquery.js')
+  script(src='/public/js/highlight.js')
+
+  link(rel='stylesheet', href='/public/css/styles.css', type='text/css' )
+
+  body
+    form(action='lookup', name='counter', method='get')
+        div.input
+            span.label Url:&nbsp;
+            input(type='text', name='url')
+            input(type='submit', value='Go!')
+
+    if summary
+      each tag in summary
+        a(href="javascript:void($('#page_source').removeHighlight().highlight('<" + tag[0] + "').highlight('</" + tag[0] + "'));") !{tag[0]}
+        |:  (!{tag[1]}) <br>
+
+    if page_source
+      #page_source
+        pre!= page_source
