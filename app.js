@@ -3,10 +3,13 @@ var express                 = require('express'),
     request                 = require('request'),
     jsdom                   = require('jsdom'),
     html                    = require("html"),
-    config                  = require('./config/config.js').config;
+    config                  = require('./config/config.js').config,
+    package_json            = require('./package.json');
 
 var app = express();
 app.set('view engine', 'jade');
+app.set('config', config);
+app.set('package_json', package_json);
 app.set('port', config.server.port || 8081);
 app.set('hostname', config.server.hostname || '0.0.0.0');
 app.use('/public', express.static('public'));
@@ -18,10 +21,24 @@ app.get('*', function (req, res, next){ // Log all requests
     logger.info(logline.join(' '));
     next();
 });
+
+app.get("/ping", handle_ping);
 app.get("/", handle_index);
 app.get("/lookup", handle_count);
 
 // Handlers
+function handle_ping(req, res){
+    var app = req.app;
+
+    var ping_data = {
+        "status"        : "OK",
+        "name"          : app.get('package_json').name,
+        "version"       : app.get('package_json').version,
+        "pid"           : "_" + process.pid
+    };
+    res.status(200).send(ping_data);
+}
+
 function handle_index(req, res) {
     var jade_elements = {
             title       : "Tag Counter",

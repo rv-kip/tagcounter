@@ -23,7 +23,7 @@ html
 
       if summary
         each tag in summary
-          a(href="javascript:void($('#page_source').removeHighlight().highlight('<" + tag[0] + "').highlight('</" + tag[0] + "'));") !{tag[0]}
+          a(href="javascript:void($('#page_source').removeHighlight().highlight('<" + tag[0] + "').highlight('</" + tag[0] + ">'));") !{tag[0]}
           |:  (!{tag[1]}) <br>
 
       if page_source
