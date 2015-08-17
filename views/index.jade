@@ -21,12 +21,17 @@ html
               input(type='text', name='url', size=50)
               input(type='submit', value='Go!')
 
-      if summary
+    if summary
+      .col-md-2
+        h4 Tag Counts:
+        p
         each tag in summary
           a(href="javascript:void($('#page_source').removeHighlight().highlight('<" + tag[0] + "').highlight('</" + tag[0] + ">'));") !{tag[0]}
-          |:  (!{tag[1]}) <br>
+          |(!{tag[1]}) <br>
 
-      if page_source
+    if page_source
+      .col-md-10
+        h4 Page Source:
         #page_source
           pre!= page_source
 
