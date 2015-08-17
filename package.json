@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js | ./node_modules/bunyan/bin/bunyan",
     "nodemon": "nodemon app.js | ./node_modules/bunyan/bin/bunyan",
-    "test": "test"
+    "aws-eb-master": "git archive --format zip --output ./elastic_beanstalk.zip master"
   },
   "author": "Kip Gebhardt <kgebhardt23@gmail.com>",
   "license": "MIT",
