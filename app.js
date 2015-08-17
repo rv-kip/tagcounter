@@ -24,7 +24,6 @@ app.get('*', function (req, res, next){ // Log all requests
 
 app.get("/ping", handle_ping);
 app.get("/", handle_index);
-app.get("/lookup", handle_count);
 
 // Handlers
 function handle_ping(req, res){
@@ -39,25 +38,30 @@ function handle_ping(req, res){
     res.status(200).send(ping_data);
 }
 
-function handle_index(req, res) {
-    var jade_elements = {
-            title       : "Tag Counter",
-        };
-    return res.render('index', jade_elements);
-}
+function handle_index(req, res){
+    var url = req.query.url || null;
 
-function handle_count(req, res){
-    url = req.query.url || null;
+    var jade_elements = {
+        title       : "Tag Counter"
+    };
 
     // ensure http://
     if (url && url.match(/^http/) === null) {
         url = 'http://' + url;
+    } else {
+        // show search form only
+        return res.render('index', jade_elements);
     }
+
     logger.info('url', url);
 
     request.get(url, function (err, response, body){
         if (err) {
-            return res.send("Error: " + err.message);
+            var options = {
+                error: err
+            };
+            return res.render('error', options);
+            // return res.send("Error: " + err.message);
         }
 
         // Convert HTML to DOM, get tag counts, sort
@@ -68,7 +72,7 @@ function handle_count(req, res){
             var tagcount = {};
             $('*').each(function(index) {
                 var tagname = $( this ).prop("tagName").toLowerCase() ||  null;
-                logger.info('tagName', tagname, index);
+                logger.debug('tagName', tagname, index);
                 if (tagcount[tagname]) {
                     tagcount[tagname] ++;
                 } else {
