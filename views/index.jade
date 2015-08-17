@@ -1,24 +1,33 @@
 html
+
   head
     title!= title
+
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(charset='utf-8')
 
   script(src='http://code.jquery.com/jquery.js')
   script(src='/public/js/highlight.js')
 
   link(rel='stylesheet', href='/public/css/styles.css', type='text/css' )
+  link(rel='stylesheet', href='/public/css/bootstrap.min.css', type='text/css' )
 
   body
-    form(action='lookup', name='counter', method='get')
-        div.input
-            span.label Url:&nbsp;
-            input(type='text', name='url')
-            input(type='submit', value='Go!')
+    .col-md-12
+      p
+      form(action='/lookup', name='counter', method='get')
+          div.input
+              span Enter URL to analyze:
+              input(type='text', name='url', size=50)
+              input(type='submit', value='Go!')
 
-    if summary
-      each tag in summary
-        a(href="javascript:void($('#page_source').removeHighlight().highlight('<" + tag[0] + "').highlight('</" + tag[0] + "'));") !{tag[0]}
-        |:  (!{tag[1]}) <br>
+      if summary
+        each tag in summary
+          a(href="javascript:void($('#page_source').removeHighlight().highlight('<" + tag[0] + "').highlight('</" + tag[0] + "'));") !{tag[0]}
+          |:  (!{tag[1]}) <br>
 
-    if page_source
-      #page_source
-        pre!= page_source
+      if page_source
+        #page_source
+          pre!= page_source
+
+    script(src='/public/js/bootstrap.min.js')
