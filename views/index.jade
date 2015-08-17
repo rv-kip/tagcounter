@@ -25,9 +25,13 @@ html
       .col-md-2
         h4 Tag Counts:
         p
-        each tag in summary
-          a(href="javascript:void($('#page_source').removeHighlight().highlight('<" + tag[0] + "').highlight('</" + tag[0] + ">'));") !{tag[0]}
-          |(!{tag[1]}) <br>
+        table.table
+          each tag in summary
+            tr
+              td
+                a(href="javascript:void($('#page_source').removeHighlight().highlight('<" + tag[0] + "').highlight('</" + tag[0] + ">'));") !{tag[0]}
+              td
+                |!{tag[1]} <br>
 
     if page_source
       .col-md-10
