@@ -1,8 +1,8 @@
 var express                 = require('express'),
     logger                  = require('./lib/logger'),
     request                 = require('request'),
-    jsdom                   = require('jsdom'),
     html                    = require("html"),
+    cheerio                 = require('cheerio'),
     config                  = require('./config/config.js').config,
     package_json            = require('./package.json');
 
@@ -64,42 +64,37 @@ function handle_index(req, res){
             // return res.send("Error: " + err.message);
         }
 
-        // Convert HTML to DOM, get tag counts, sort
-        var scripts = ["http://code.jquery.com/jquery.js"];
-        jsdom.env( body, scripts, function(err, window){
-            var document = window.document;
-            var $ = window.jQuery;
-            var tagcount = {};
-            $('*').each(function(index) {
-                var tagname = $( this ).prop("tagName").toLowerCase() ||  null;
-                logger.debug('tagName', tagname, index);
-                if (tagcount[tagname]) {
-                    tagcount[tagname] ++;
-                } else {
-                    tagcount[tagname] = 1;
-                }
-            });
+        // DOM-ify
+        var $ = cheerio.load(body),
+            tagcount = {};
 
-            // sort tagcount by count
-            var tagcount_arr = [];
-            for (var tag in tagcount) {
-                tagcount_arr.push([tag, tagcount[tag]]);
+        $('*').each(function(index, element){
+            logger.debug('index, tagname:', index, element.name);
+            if (tagcount[element.name]) {
+                tagcount[element.name] ++;
+            } else {
+                tagcount[element.name] = 1;
             }
-            tagcount_arr.sort(function(a, b){
-                return b[1] - a[1];
-            });
-
-            // Pretty print format the source
-            var ret_body = safe_tags(html.prettyPrint(window.document.documentElement.outerHTML, {indent_size: 2}));
-
-            var jade_elements = {
-                title       : "Tag Counter",
-                page_source : ret_body,
-                summary     : tagcount_arr
-            };
-
-            return res.render('index', jade_elements);
         });
+        // sort tagcount by count
+        var tagcount_arr = [];
+        for (var tag in tagcount) {
+            tagcount_arr.push([tag, tagcount[tag]]);
+        }
+        tagcount_arr.sort(function(a, b){
+            return b[1] - a[1];
+        });
+
+        // Pretty print format the source
+        var ret_body = safe_tags(html.prettyPrint(body, {indent_size: 2}));
+
+        var jade_elements = {
+            title       : "Tag Counter",
+            page_source : ret_body,
+            summary     : tagcount_arr
+        };
+
+        return res.render('index', jade_elements);
     });
 }
 
