@@ -6,7 +6,7 @@ Takes a URL and scans the page reporting back a count of tags found and a highli
 
 ## Usage
 ```
-$ git clone git@github.com:rv-kip/tagcounter.git
+$ git clone https://github.com/rv-kip/tagcounter.git
 $ cd tagcounter
 $ npm install
 $ npm start
